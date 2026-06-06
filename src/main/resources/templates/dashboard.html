@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<title>醫師儀表板</title>
+
+<style>
+
+body{
+    font-family: Arial,sans-serif;
+    margin:30px;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logout-btn{
+    padding:8px 15px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+th,td{
+    border:1px solid #ccc;
+    padding:10px;
+    text-align:center;
+}
+
+.status-BOOKED{
+    color:blue;
+    font-weight:bold;
+}
+
+.status-CHECKED_IN{
+    color:orange;
+    font-weight:bold;
+}
+
+.status-COMPLETED{
+    color:green;
+    font-weight:bold;
+}
+
+.status-CANCELLED{
+    color:red;
+    font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+    <div>
+        <h2>
+            歡迎，
+            <span th:text="${doctor.name}"></span>
+            醫師
+            (
+            <span th:text="${doctor.department}"></span>
+            )
+        </h2>
+    </div>
+
+    <form th:action="@{/logout}" method="post">
+        <button type="submit"
+                class="logout-btn">
+            登出
+        </button>
+    </form>
+
+</div>
+
+<hr>
+
+<h3 th:text="|今日掛號：${today}|"></h3>
+
+<div th:if="${#lists.isEmpty(appointments)}">
+
+    <p>今日沒有掛號資料</p>
+
+</div>
+
+<table th:unless="${#lists.isEmpty(appointments)}">
+
+    <thead>
+        <tr>
+    <th>時段</th>
+    <th>病患姓名</th>
+    <th>病歷號</th>
+    <th>狀態</th>
+    <th>操作</th>
+</tr>
+    </thead>
+
+    <tbody>
+
+        <tr th:each="appt : ${appointments}">
+
+            <td th:text="${appt.timeSlot}"></td>
+
+            <td th:text="${appt.patient.name}"></td>
+
+            <td th:text="${appt.patient.chartNo}"></td>
+
+            <td th:text="${appt.status}"
+                th:class="${'status-' + appt.status}">
+            </td>
+
+            <td>
+    <button th:if="${appt.status == 'BOOKED'}"
+            th:data-id="${appt.apptId}"
+            onclick="cancelAppointment(this)">
+        取消
+    </button>
+</td>
+        </tr>
+
+    </tbody>
+
+</table>
+
+<script>
+
+function cancelAppointment(btn){
+
+    const id = btn.dataset.id;
+
+    fetch(`/api/appointments/${id}/status`,{
+
+        method:"PUT",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            status:"CANCELLED"
+        })
+
+    })
+    .then(response => {
+
+        if(response.ok){
+
+            location.reload();
+
+        }else{
+
+            alert("取消失敗");
+
+        }
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>

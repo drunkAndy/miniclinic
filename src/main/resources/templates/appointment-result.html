@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<title>掛號成功</title>
+</head>
+
+<body>
+
+<h1>掛號完成</h1>
+
+<p>
+病歷號：
+<span th:text="${appointment.patient.chartNo}"></span>
+</p>
+
+<p>
+病患姓名：
+<span th:text="${appointment.patient.name}"></span>
+</p>
+
+<p>
+醫師：
+<span th:text="${appointment.doctor.name}"></span>
+</p>
+
+<p>
+日期：
+<span th:text="${appointment.apptDate}"></span>
+</p>
+
+<p>
+時段：
+<span th:text="${appointment.timeSlot}"></span>
+</p>
+
+<p>
+狀態：
+<span th:text="${appointment.status}"></span>
+</p>
+
+<br>
+
+<a href="/">返回首頁</a>
+
+</body>
+
+</html>

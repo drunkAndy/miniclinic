@@ -1,0 +1,26 @@
+### Health
+GET http://localhost:8080/api/health
+
+###
+
+GET http://localhost:8080/api/about
+
+###
+
+GET http://localhost:8080/api/doctors
+
+###
+
+GET http://localhost:8080/api/doctors?department=內科
+
+###
+
+GET http://localhost:8080/api/doctors/D001
+
+###
+
+GET http://localhost:8080/api/doctors/D999
+
+###
+
+GET http://localhost:8080/api/departments
