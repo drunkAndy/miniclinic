@@ -27,4 +27,11 @@ extends JpaRepository<Appointment,Long>{
         Doctor doctor,
         LocalDate apptDate
 );
+
+
+long countByStatus(
+    String status
+);
+
+
 }

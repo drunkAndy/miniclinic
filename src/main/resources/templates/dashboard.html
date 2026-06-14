@@ -143,7 +143,39 @@ th,td{
 
 function cancelAppointment(btn){
 
-    function completeAppointment(btn){
+    const id = btn.dataset.id;
+
+    fetch(`/api/appointments/${id}/status`,{
+
+        method:"PUT",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            status:"CANCELLED"
+        })
+
+    })
+    .then(response => {
+
+        if(response.ok){
+
+            location.reload();
+
+        }else{
+
+            alert("取消失敗");
+
+        }
+
+    });
+
+}
+
+
+function completeAppointment(btn){
 
     const id = btn.dataset.id;
 
@@ -176,38 +208,6 @@ function cancelAppointment(btn){
 
 }
 
-    const id = btn.dataset.id;
-
-    fetch(`/api/appointments/${id}/status`,{
-
-        method:"PUT",
-
-        headers:{
-            "Content-Type":"application/json"
-        },
-
-        body:JSON.stringify({
-            status:"CANCELLED"
-        })
-
-    })
-    .then(response => {
-
-        if(response.ok){
-
-            location.reload();
-
-        }else{
-
-            alert("取消失敗");
-
-        }
-
-    });
-
-}
-
 </script>
-
 </body>
 </html>

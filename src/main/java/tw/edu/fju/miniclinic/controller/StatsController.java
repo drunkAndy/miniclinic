@@ -1,75 +1,72 @@
 package tw.edu.fju.miniclinic.controller;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import tw.edu.fju.miniclinic.model.*;
+import tw.edu.fju.miniclinic.model.AppointmentRepository;
+import tw.edu.fju.miniclinic.model.DoctorRepository;
+import tw.edu.fju.miniclinic.model.PatientRepository;
 
-@Controller
+@RestController
 public class StatsController {
 
     @Autowired
-    DoctorRepository doctorRepo;
+    private DoctorRepository doctorRepo;
 
     @Autowired
-    PatientRepository patientRepo;
+    private PatientRepository patientRepo;
 
     @Autowired
-    AppointmentRepository appointmentRepo;
+    private AppointmentRepository appointmentRepo;
 
-    @GetMapping("/stats")
-    public String stats(
-        Model model
-    ){
+    @GetMapping("/api/stats")
+    public Map<String, Object> stats() {
 
-        model.addAttribute(
-            "doctorCount",
-            doctorRepo.count()
+        Map<String, Object> result =
+                new HashMap<>();
+
+        result.put(
+                "totalDoctors",
+                doctorRepo.count()
         );
 
-        model.addAttribute(
-    "patientCount",
-    patientRepo.findAll().size()
+        result.put(
+        "totalPatients",
+        patientRepo.findAll().size()
 );
 
-        model.addAttribute(
-            "appointmentCount",
-            appointmentRepo.count()
+        result.put(
+                "totalAppointments",
+                appointmentRepo.count()
         );
 
-        Map<String,Long> group=
-            new HashMap<>();
+        Map<String, Long> byStatus =
+                new HashMap<>();
 
-        for(
-            Appointment a:
-            appointmentRepo.findAll()
-        ){
-
-            String dep=
-                a.getDoctor()
-                 .getDepartment();
-
-            group.put(
-                dep,
-                group.getOrDefault(
-                    dep,
-                    0L
-                )+1
-            );
-
-        }
-
-        model.addAttribute(
-            "group",
-            group
+        byStatus.put(
+                "BOOKED",
+                appointmentRepo.countByStatus("BOOKED")
         );
 
-        return "stats";
+        byStatus.put(
+                "COMPLETED",
+                appointmentRepo.countByStatus("COMPLETED")
+        );
 
+        byStatus.put(
+                "CANCELLED",
+                appointmentRepo.countByStatus("CANCELLED")
+        );
+
+        result.put(
+                "byStatus",
+                byStatus
+        );
+
+        return result;
     }
-
 }
